@@ -1,4 +1,7 @@
 import React from 'react';
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
 const form = ({setInputText, todos, setTodos, inputText, setStatus})=>{
     const inputTextHandler = (e) => {
@@ -6,18 +9,27 @@ const form = ({setInputText, todos, setTodos, inputText, setStatus})=>{
     }
     const submitTodoHandler = (e) => {
         e.preventDefault();
+        if(document.getElementById('inputTodo').value.trim() == ""){
+          MySwal.fire({
+            title: <p>Todo Cannot be Empty</p>,
+            didOpen: () => {
+              MySwal.showLoading()
+            },
+          })
+        }else{
         setTodos([
             ...todos,
             {text:inputText, completed:false, id:Math.random() * 1000 }
         ])
         setInputText("");
+      }
     }
     const statusHandler = (e) => {
         setStatus(e.target.value);
     }
     return (
         <form>
-        <input value={inputText} onChange={inputTextHandler} type="text" className="todo-input" />
+        <input value={inputText} onChange={inputTextHandler} type="text" className="todo-input" id="inputTodo"/>
         <button onClick={submitTodoHandler} className="todo-button" type="submit">
           <i className="fas fa-plus-square"></i>
         </button>
